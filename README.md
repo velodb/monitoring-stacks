@@ -78,8 +78,11 @@ Metrics API via an API key is enough.
   - AWS Asia Pacific NorthEast 1: `apps-api.ap-northeast-1.aws.velodb.cloud`
   - GCP US Central 1: `apps-api.us-central1.gcp.velodb.cloud`
 
-> Metrics API rate limit: **100 requests per minute per endpoint per API key**.
-> Use `scrape_interval ≥ 15s` and keep **no more than ~30 targets** per endpoint.
+> Metrics API rate limit: **30 requests per minute per cluster**. Each scrape
+> against a warehouse or cluster endpoint counts as one request, so a
+> `scrape_interval` of **≥ 15s** (≤ 4 req/min) keeps you comfortably within
+> the budget. Stacking multiple Prometheus instances or shrinking the interval
+> below 2s per cluster will trigger 429s.
 
 ---
 
@@ -210,8 +213,10 @@ A: Confirm that the `X-API-Key` header is actually being sent and that the key
 has access to the organization that owns the target warehouse.
 
 **Q: The scrape returns 429.**
-A: You hit the rate limit. Increase `scrape_interval`, reduce the number of
-targets per endpoint, or split traffic across multiple API keys.
+A: You hit the per-cluster rate limit (**30 req/min/cluster**). Increase
+`scrape_interval`, or make sure that only one Prometheus instance is scraping
+each warehouse / cluster endpoint — multiple Prometheis sharing the same
+target will compound requests against the same quota.
 
 **Q: The `$wid` dropdown in Grafana is empty.**
 A: Prometheus has not yet ingested `doris_fe_connection_total`. Make sure the
