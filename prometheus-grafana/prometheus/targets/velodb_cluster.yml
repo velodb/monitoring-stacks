@@ -1,0 +1,18 @@
+# Cluster-level scrape targets for the `velodb-cluster` job.
+#
+# One entry per compute cluster. The regional endpoint goes under `targets`,
+# and the warehouse + cluster path is provided via the `__metrics_path__` label.
+
+- targets:
+    - apps-api.us-east-1.aws.velodb.cloud
+  labels:
+    __metrics_path__: /v1/warehouse/XXZ0RP/cluster/CLU123/metrics
+    warehouse: XXZ0RP
+    cluster: CLU123
+
+# - targets:
+#     - apps-api.us-east-1.aws.velodb.cloud
+#   labels:
+#     __metrics_path__: /v1/warehouse/XXZ0RP/cluster/CLU456/metrics
+#     warehouse: XXZ0RP
+#     cluster: CLU456

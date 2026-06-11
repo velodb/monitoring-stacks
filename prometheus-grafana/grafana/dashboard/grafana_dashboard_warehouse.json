@@ -381,7 +381,7 @@
         "description": "Warehouse ID. Matches PromQL labels wid= and job= (FE node exporter uses wid as job).",
         "hide": 0,
         "includeAll": false,
-        "label": "Warehouse ID ($wid)",
+        "label": "Warehouse ID",
         "multi": false,
         "name": "wid",
         "options": [],
@@ -423,8 +423,8 @@
   "time": {"from": "now-1h", "to": "now"},
   "timepicker": {},
   "timezone": "browser",
-  "title": "Doris Warehouse Monitoring (Nexus)",
-  "uid": "doris-nexus-warehouse",
+  "title": "VeloDB Warehouse Monitoring",
+  "uid": "velodb-warehouse-dashboard",
   "version": 1,
   "weekStart": ""
 }

@@ -1,0 +1,43 @@
+# Sample Prometheus configuration for scraping the VeloDB Cloud Metrics API.
+#
+# Requirements:
+#   - Prometheus >= 2.43 (for the `http_headers` field under `scrape_configs`)
+#   - A VeloDB Cloud API key of the form `sk-xxxxxxxx`
+#
+# Metrics API rate limit: 100 requests per minute per endpoint per API key.
+# Keep `scrape_interval` >= 15s and no more than ~30 targets per endpoint.
+#
+# Reference: https://docs.velodb.io/cloud/26.x/management-guide/monitoring/metrics
+
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+scrape_configs:
+  # ---- Warehouse-level metrics ----
+  - job_name: velodb-warehouse
+    scheme: https
+    scrape_interval: 30s
+    metrics_path: /metrics            # overridden per-target via __metrics_path__
+    http_headers:
+      X-API-Key:
+        values:
+          - sk-xxxxxxxxxxxxxxxxxxxx
+    file_sd_configs:
+      - files:
+          - targets/velodb_warehouse.yml
+        refresh_interval: 1m
+
+  # ---- Cluster-level metrics ----
+  - job_name: velodb-cluster
+    scheme: https
+    scrape_interval: 30s
+    metrics_path: /metrics
+    http_headers:
+      X-API-Key:
+        values:
+          - sk-xxxxxxxxxxxxxxxxxxxx
+    file_sd_configs:
+      - files:
+          - targets/velodb_cluster.yml
+        refresh_interval: 1m

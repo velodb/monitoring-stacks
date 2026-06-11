@@ -329,7 +329,7 @@
         "description": "Warehouse ID. Matches PromQL label wid=.",
         "hide": 0,
         "includeAll": false,
-        "label": "Warehouse ID ($wid)",
+        "label": "Warehouse ID",
         "multi": false,
         "name": "wid",
         "options": [],
@@ -350,7 +350,7 @@
         "description": "Compute Cluster ID. Filtered by the selected $wid. Matches PromQL labels cid= (BE node/cache/load/tablet) and cluster_id= (FE query metrics).",
         "hide": 0,
         "includeAll": false,
-        "label": "Cluster ID ($cid)",
+        "label": "Cluster ID",
         "multi": false,
         "name": "cid",
         "options": [],
@@ -392,8 +392,8 @@
   "time": {"from": "now-1h", "to": "now"},
   "timepicker": {},
   "timezone": "browser",
-  "title": "Doris Cluster Monitoring (Nexus)",
-  "uid": "doris-nexus-cluster",
+  "title": "VeloDB Cluster Monitoring",
+  "uid": "velodb-cluster-dashboard",
   "version": 1,
   "weekStart": ""
 }

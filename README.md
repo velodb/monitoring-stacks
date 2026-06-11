@@ -15,20 +15,39 @@ Prometheus + Grafana stack with minimal effort.
 
 ## What's in the box
 
-The repository currently focuses on Grafana dashboards so that you can drop them
-straight into your existing observability platform.
+The repository ships a ready-to-use Prometheus + Grafana bundle: sample
+Prometheus configuration that scrapes the VeloDB Cloud Metrics API, plus
+Grafana dashboards you can drop straight into your existing observability
+platform.
 
 ```
 monitoring-stacks/
-└── grafana-dashboard/
-    ├── grafana_dashboard_warehouse.json   # Warehouse-level dashboard
-    └── grafana_dashboard_cluster.json     # Compute cluster-level dashboard
+└── prometheus-grafana/
+    ├── prometheus/
+    │   ├── prometheus.yml                        # Sample scrape config
+    │   └── targets/
+    │       ├── velodb_warehouse.yml              # Warehouse targets (file_sd)
+    │       └── velodb_cluster.yml                # Cluster targets (file_sd)
+    └── grafana/
+        └── dashboard/
+            ├── grafana_dashboard_warehouse.json  # Warehouse-level dashboard
+            └── grafana_dashboard_cluster.json    # Compute cluster-level dashboard
 ```
 
 | File | UID | Scope | Primary coverage |
 | --- | --- | --- | --- |
-| `grafana_dashboard_warehouse.json` | `doris-nexus-warehouse` | Warehouse (`$wid`) | FE node resources, query performance, connections / storage, load jobs, routine load, workload group |
-| `grafana_dashboard_cluster.json`   | `doris-nexus-cluster`   | Compute cluster (`$wid` + `$cid`) | Cluster health, BE node resources, query performance, cache, remote S3, load, tablet compaction |
+| `grafana_dashboard_warehouse.json` | `velodb-warehouse-dashboard` | Warehouse (`$wid`) | FE node resources, query performance, connections / storage, load jobs, routine load, workload group |
+| `grafana_dashboard_cluster.json`   | `velodb-cluster-dashboard`   | Compute cluster (`$wid` + `$cid`) | Cluster health, BE node resources, query performance, cache, remote S3, load, tablet compaction |
+
+### Screenshots
+
+**VeloDB Warehouse Monitoring** — FE-side resources and warehouse-level business metrics, filtered by `Warehouse ID`:
+
+![Warehouse dashboard](prometheus-grafana/images/velodb-warehouse-dashboard.png)
+
+**VeloDB Cluster Monitoring** — BE-side runtime health for a single compute cluster, filtered by `Warehouse ID` + `Cluster ID`:
+
+![Cluster dashboard](prometheus-grafana/images/velodb-cluster-dashboard.png)
 
 ---
 
@@ -68,10 +87,12 @@ Metrics API via an API key is enough.
 
 ### 1. Configure Prometheus to scrape the VeloDB Cloud Metrics API
 
-The example below uses `file_sd_configs` so that adding more warehouses or
-clusters later is just a YAML edit.
+A ready-to-use sample lives in
+[`prometheus-grafana/prometheus/`](prometheus-grafana/prometheus/). It uses
+`file_sd_configs` so that adding more warehouses or clusters later is just a
+YAML edit.
 
-`prometheus.yml`:
+[`prometheus-grafana/prometheus/prometheus.yml`](prometheus-grafana/prometheus/prometheus.yml):
 
 ```yaml
 scrape_configs:
@@ -104,7 +125,7 @@ scrape_configs:
         refresh_interval: 1m
 ```
 
-`targets/velodb_warehouse.yml` (one entry per warehouse):
+[`prometheus-grafana/prometheus/targets/velodb_warehouse.yml`](prometheus-grafana/prometheus/targets/velodb_warehouse.yml) (one entry per warehouse):
 
 ```yaml
 - targets:
@@ -114,7 +135,7 @@ scrape_configs:
     warehouse: XXZ0RP
 ```
 
-`targets/velodb_cluster.yml` (one entry per compute cluster):
+[`prometheus-grafana/prometheus/targets/velodb_cluster.yml`](prometheus-grafana/prometheus/targets/velodb_cluster.yml) (one entry per compute cluster):
 
 ```yaml
 - targets:
@@ -133,8 +154,8 @@ scrape_configs:
 ### 2. Import the dashboards into Grafana
 
 1. In Grafana, go to **Dashboards → New → Import**.
-2. Upload `grafana-dashboard/grafana_dashboard_warehouse.json` (and/or
-   `..._cluster.json`).
+2. Upload `prometheus-grafana/grafana/dashboard/grafana_dashboard_warehouse.json`
+   (and/or `..._cluster.json`).
 3. Pick the Prometheus data source you configured in the previous step.
 4. Inside the dashboard, select the target **Warehouse ID (`$wid`)** from the
    dropdown; for the cluster dashboard, also pick the **Cluster ID (`$cid`)**.
@@ -149,7 +170,7 @@ scrape_configs:
 
 ## Dashboards in detail
 
-### Warehouse dashboard (`doris-nexus-warehouse`)
+### Warehouse dashboard (`velodb-warehouse-dashboard`)
 
 Focused on **FE (Frontend)** nodes and warehouse-level business metrics.
 
@@ -164,7 +185,7 @@ Focused on **FE (Frontend)** nodes and warehouse-level business metrics.
 
 Template variables: `DS_PROMETHEUS`, `wid`, `interval`.
 
-### Cluster dashboard (`doris-nexus-cluster`)
+### Cluster dashboard (`velodb-cluster-dashboard`)
 
 Focused on **BE (Backend)** nodes and the runtime health of a single compute cluster.
 

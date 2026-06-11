@@ -1,0 +1,22 @@
+# Warehouse-level scrape targets for the `velodb-warehouse` job.
+#
+# One entry per warehouse. The regional endpoint goes under `targets`, and the
+# warehouse-specific path is provided via the `__metrics_path__` label so that
+# Prometheus rewrites the scrape URL per target.
+#
+# Regional endpoints (examples):
+#   - apps-api.us-east-1.aws.velodb.cloud
+#   - apps-api.ap-northeast-1.aws.velodb.cloud
+#   - apps-api.us-central1.gcp.velodb.cloud
+
+- targets:
+    - apps-api.us-east-1.aws.velodb.cloud
+  labels:
+    __metrics_path__: /v1/warehouse/XXZ0RP/metrics
+    warehouse: XXZ0RP
+
+# - targets:
+#     - apps-api.ap-northeast-1.aws.velodb.cloud
+#   labels:
+#     __metrics_path__: /v1/warehouse/YYY1AB/metrics
+#     warehouse: YYY1AB
